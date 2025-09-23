@@ -13,6 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Create .env on EC2
+        run: |
+          cat > ~/Hirehub/Backend/.env <<EOL
+          PORT=${{ secrets.PORT }}
+          MONGO_URI=${{ secrets.MONGO_URI }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          EOL
+
       - name: Deploy Backend
         run: |
           cd ~/Hirehub/Backend
