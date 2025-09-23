@@ -7,31 +7,25 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # use your EC2 runner
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          cd Hirehub || git clone https://github.com/BabSatya/Hirehub.git && cd Hirehub
+      - name: Deploy Backend
+        run: |
+          cd ~/Hirehub/Backend
           git pull origin main
-          
-          # Backend setup
-          cd Backend
           npm install
           pm2 restart backend || pm2 start server.js --name backend
 
-          # Frontend setup
-          cd ../Frontend
+      - name: Deploy Frontend
+        run: |
+          cd ~/Hirehub/Frontend
+          git pull origin main
           npm install
           npm run build
 
-          # Restart Nginx to load new build
-          sudo systemctl restart nginx
+      - name: Restart Nginx
+        run: sudo systemctl restart nginx
