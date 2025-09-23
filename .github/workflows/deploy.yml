@@ -17,14 +17,14 @@ jobs:
         run: |
           cd ~/Hirehub/Backend
           git pull origin main
-          npm install
+          npm ci
           pm2 restart backend || pm2 start server.js --name backend
 
       - name: Deploy Frontend
         run: |
           cd ~/Hirehub/Frontend
           git pull origin main
-          npm install
+          npm ci
           npm run build
 
       - name: Restart Nginx
