@@ -24,12 +24,12 @@ jobs:
           git pull origin main
           
           # Backend setup
-          cd backend
+          cd Backend
           npm install
           pm2 restart backend || pm2 start server.js --name backend
 
           # Frontend setup
-          cd ../frontend
+          cd ../Frontend
           npm install
           npm run build
 
