@@ -1,0 +1,35 @@
+name: Deploy HireHub to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}   # set this to 13.211.163.79 in GitHub secrets
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }} # your PEM key as GitHub secret
+        script: |
+          # Go to project or clone fresh
+          cd Hirehub || git clone https://github.com/BabSatya/Hirehub.git && cd Hirehub
+          git pull origin main
+          
+          # Backend setup
+          cd backend
+          npm install
+          pm2 restart backend || pm2 start server.js --name backend
+
+          # Frontend setup
+          cd ../frontend
+          npm install
+          npm run build
