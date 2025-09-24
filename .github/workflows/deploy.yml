@@ -31,8 +31,7 @@ jobs:
       - name: Deploy Frontend
         run: |
           cd ~/Hirehub/Frontend
-          git pull origin main
-          npm ci
+          
           npm run build
 
       - name: Restart Nginx
